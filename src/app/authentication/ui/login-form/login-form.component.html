@@ -1,0 +1,32 @@
+<form #form="ngForm" (ngSubmit)="onSubmit()">
+  <div class="form-field">
+    <label for="email">Email</label>
+    <input
+      pInputText
+      type="text"
+      id="email"
+      name="email"
+      [(ngModel)]="loginDto.email"
+      required
+    />
+  </div>
+
+  <div class="form-field">
+    <label for="password">Password</label>
+    <input
+      pInputText
+      type="password"
+      id="password"
+      name="password"
+      [(ngModel)]="loginDto.password"
+      required
+    />
+    @if (isErrorLogin) {
+    <p>Connexion impossible : Email ou mot de passe incorrect</p>
+    }
+  </div>
+
+  <div>
+    <p-button type="submit" label="Se connecter" severity="success" />
+  </div>
+</form>

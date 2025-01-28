@@ -1,25 +1,46 @@
 <p-toolbar [style]="{ height: '100px' }">
-    <div class="p-toolbar-group-start">
-        <img src="assets/icons/icon-72x72.png" alt="logo" />
-    </div>
-    <div class="p-toolbar-group-center">
-        {{ title }}
-    </div>
-    <div class="p-toolbar-group-end">
-        <i class="pi pi-shopping-cart" style="font-size: 2rem"></i>
-    </div>
+  <div class="p-toolbar-group-start">
+    <img src="assets/icons/icon-72x72.png" alt="logo" />
+  </div>
+  <div class="p-toolbar-group-center">
+    {{ title }}
+  </div>
+  <div class="p-toolbar-group-end gap-perso-1">
+    <i class="pi pi-shopping-cart" style="font-size: 2rem"></i>
+    @if(isLogin) {
+    <p-button label="Se deconnecter" (onClick)="logout()" />
+
+    } @else {
+    <p-button label="Se connecter" (onClick)="login()" />
+    <p-button label="Créer un compte" (onClick)="register()" />
+    }
+  </div>
 </p-toolbar>
-<p-splitter 
-    [panelSizes]="[20, 80]" 
-    [style]="{ height: 'calc(100vh - 100px)' }">
-    <ng-template pTemplate>
-        <div class="w-full">
-            <app-panel-menu />
-        </div>
-    </ng-template>
-    <ng-template pTemplate>
-        <div class="w-full app-content">
-            <router-outlet></router-outlet>
-        </div>
-    </ng-template>
+<p-splitter [panelSizes]="[20, 80]" [style]="{ height: 'calc(100vh - 100px)' }">
+  <ng-template pTemplate>
+    <div class="w-full">
+      <app-panel-menu />
+    </div>
+  </ng-template>
+  <ng-template pTemplate>
+    <div class="w-full app-content">
+      <router-outlet></router-outlet>
+    </div>
+  </ng-template>
 </p-splitter>
+
+<p-dialog
+  [(visible)]="isDialogLoginVisible"
+  [style]="{ width: '50vw' }"
+  header="Se connecter"
+>
+  <app-login-form (onLogin)="closeDialog()" />
+</p-dialog>
+
+<p-dialog
+  [(visible)]="isDialogRegisterVisible"
+  [style]="{ width: '50vw' }"
+  header="Créer un compte"
+>
+  <app-register-form (onRegister)="closeDialog()" />
+</p-dialog>
