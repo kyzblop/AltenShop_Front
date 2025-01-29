@@ -29,10 +29,10 @@ import { Subscription } from "rxjs";
 export class AppComponent implements OnInit, OnDestroy {
   title = "ALTEN SHOP";
 
-  isDialogLoginVisible: boolean = false;
-  isDialogRegisterVisible: boolean = false;
-  isLogin: boolean = false;
-  authSubscription: Subscription | null = null;
+  public isDialogLoginVisible: boolean = false;
+  public isDialogRegisterVisible: boolean = false;
+  public isLogin: boolean = false;
+  public authSubscription: Subscription | null = null;
 
   constructor(private authService: AuthService) {}
 

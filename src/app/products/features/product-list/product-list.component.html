@@ -1,14 +1,16 @@
 <h1 class="text-center">Liste des produits</h1>
 
+@if (isAdmin) {
 <p-button
   label="Créer produit"
   (onClick)="onCreate()"
   class="block text-center"
 />
+}
 
-<p-dataView #dv [value]="products()">
+<p-dataView #dv [value]="products">
   <ng-template pTemplate="list" let-products>
-    @for (product of products; track product) {
+    @for (product of products ; track product) {
     <p-card class="block mb-2">
       <span class="font-medium text-secondary text-sm">{{
         product.category
@@ -18,6 +20,7 @@
 
       <ng-template pTemplate="footer">
         <div class="flex gap-3 mt-1">
+          @if(isAdmin){
           <p-button
             label="Modifier"
             severity="secondary"
@@ -28,6 +31,7 @@
             severity="danger"
             (onClick)="onDelete(product)"
           />
+          }
         </div>
       </ng-template>
     </p-card>

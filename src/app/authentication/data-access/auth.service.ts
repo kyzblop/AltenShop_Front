@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { LoginDto } from "./login-dto";
-import { BehaviorSubject, catchError, Observable, tap } from "rxjs";
+import { BehaviorSubject, Observable, tap } from "rxjs";
 import { ResponseLoginDto } from "./response-login-dto";
 import { User } from "./user.model";
 
@@ -16,12 +16,17 @@ export class AuthService {
   private isAuthSubject = new BehaviorSubject<boolean>(this.isAuth());
   public isAuthObservable = this.isAuthSubject.asObservable();
 
+  private isAdminLoginSubject = new BehaviorSubject<boolean>(
+    this.isAdminLogin()
+  );
+  public isAdminLoginObservable = this.isAdminLoginSubject.asObservable();
+
   constructor() {
     this.checkLocalStorage();
   }
 
   // Méthode pour savoir si l'utilisateur est connecté
-  public isAuth() {
+  public isAuth(): boolean {
     if (window.localStorage) {
       return !!localStorage.getItem("token");
     } else {
@@ -29,11 +34,37 @@ export class AuthService {
     }
   }
 
-  // Méthode pour regarder si le token change et mettre à jour l'onformation d'authentification s'il change
+  // Méthode pour savoir si l'utilisateur connecté est admin
+  public isAdminLogin(): boolean {
+    // Récupération du token dans le local storage
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      // Décodage du token
+      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+
+      // Si le subject du token est l'adresse mail admin alors l'utilisateur est admin
+      if (tokenPayload.sub == "admin@admin.com") {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log("Erreur lors du décodage du token : " + error);
+      return false;
+    }
+  }
+
+  // Méthode pour regarder si le token change et mettre à jour l'information d'authentification s'il change
   public checkLocalStorage() {
     window.addEventListener("storage", (event) => {
       if (event.key === "token") {
         this.isAuthSubject.next(this.isAuth());
+        this.isAdminLoginSubject.next(this.isAdminLogin());
       }
     });
   }
@@ -45,7 +76,8 @@ export class AuthService {
       .pipe(
         tap((response: ResponseLoginDto) => {
           localStorage.setItem("token", response.token);
-          this.isAuthSubject.next(true);
+          this.isAuthSubject.next(this.isAuth());
+          this.isAdminLoginSubject.next(this.isAdminLogin());
         })
       );
   }
@@ -53,7 +85,8 @@ export class AuthService {
   // Méthode pour se déconnecter
   public logout() {
     localStorage.removeItem("token");
-    this.isAuthSubject.next(false);
+    this.isAuthSubject.next(this.isAuth());
+    this.isAdminLoginSubject.next(this.isAdminLogin());
   }
 
   // Méthode pour créer un compte
