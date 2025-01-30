@@ -1,0 +1,52 @@
+<h1 class="text-center">Votre panier</h1>
+
+<p-dataView #dv [value]="BucketSet" [emptyMessage]="emptyMessage">
+  <ng-template pTemplate="list" let-products>
+    @for (product of BucketSet ; track product.id) {
+
+    <p-card class="block mb-2">
+      <div class="row">
+        <img class="imageCard" src="{{ product.image }}" alt="product_image" />
+        <div class="col space">
+          <div>
+            <span class="font-medium text-secondary text-sm">{{
+              product.category
+            }}</span>
+            <div class="text-lg font-medium text-900 mt-2">
+              {{ product.name }}
+            </div>
+            <div>
+              {{ product.description }}
+            </div>
+          </div>
+
+          <div>
+            <div class="text-lg font-medium text-900 mt-2">
+              Quantité dans le panier : {{ getQuantityProduct(product) }}
+            </div>
+
+            <div class="text-lg font-medium text-900 mt-2">
+              {{ product.price }} €
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Supprimer du panier"
+          severity="danger"
+          (onClick)="delete(product)"
+        ></p-button>
+      </ng-template>
+    </p-card>
+
+    }
+  </ng-template>
+</p-dataView>
+@if(!isBucketEmpty){
+<p-button
+  class="boutonValider"
+  label="Valider le panier"
+  severity="success"
+></p-button>
+}

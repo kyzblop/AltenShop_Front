@@ -3,6 +3,7 @@ import { AuthService } from "app/authentication/data-access/auth.service";
 import { Product } from "app/products/data-access/product.model";
 import { ProductsService } from "app/products/data-access/products.service";
 import { ProductFormComponent } from "app/products/ui/product-form/product-form.component";
+import { UserService } from "app/user/data-access/user.service";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { DataViewModule } from "primeng/dataview";
@@ -49,23 +50,58 @@ export class ProductListComponent implements OnInit, OnDestroy {
   public isAdmin: boolean = false;
   public readonly editedProduct = signal<Product>(emptyProduct);
 
+  public isLogin: boolean = false;
+  public authSubscription: Subscription | null = null;
   public isAdminLoginSubscription: Subscription | null = null;
+  public productSubscription: Subscription | null = null;
 
-  constructor(private authService: AuthService) {}
+  public bucket: Product[] = [];
+  public wantedList: Product[] = [];
+
+  public idUser: number = 0;
+
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-    this.productsService.productObservable.subscribe((products) => {
-      this.products = products;
-    });
+    this.productSubscription = this.productsService.productObservable.subscribe(
+      (products) => {
+        this.products = products;
+      }
+    );
 
     this.isAdminLoginSubscription =
       this.authService.isAdminLoginObservable.subscribe((isAdminStatus) => {
         this.isAdmin = isAdminStatus;
       });
+
+    this.authSubscription = this.authService.isAuthObservable.subscribe(
+      (authStatus) => {
+        this.isLogin = authStatus;
+        this.idUser = this.authService.getUserId();
+        if (this.isLogin) {
+          this.userService.bucketObservable.subscribe((bucket) => {
+            if (bucket != null) {
+              this.bucket = bucket;
+            }
+          });
+
+          this.userService.wantedListObservable.subscribe((wantedList) => {
+            if (wantedList != null) {
+              this.wantedList = wantedList;
+            }
+          });
+        }
+      }
+    );
   }
 
   ngOnDestroy(): void {
     this.isAdminLoginSubscription?.unsubscribe();
+    this.authSubscription?.unsubscribe();
+    this.productSubscription?.unsubscribe();
   }
 
   public onCreate() {
@@ -99,5 +135,33 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   private closeDialog() {
     this.isDialogVisible = false;
+  }
+
+  // Méthode pour ajouter un produit dans le panier
+  public addBucket(product: Product) {
+    this.bucket.push(product);
+    this.userService.updateUser(this.idUser, this.bucket, null).subscribe();
+    product.quantity--;
+    this.productsService.updateQuantity(product).subscribe();
+  }
+
+  // Méthode pour ajouter un produit à la liste de souhait
+  public addWantedList(product: Product) {
+    this.wantedList.push(product);
+    this.userService.updateUser(this.idUser, null, this.wantedList).subscribe();
+  }
+
+  // Méthode pour savoir si le produit est dans la liste de souhait
+  public isProductWanted(product: Product): boolean {
+    return !!this.wantedList.find((p) => p.id === product.id);
+  }
+
+  // Méthode pour savoir si le produit est encore disponible
+  public isProductAvailable(product: Product): boolean {
+    if (product.quantity > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

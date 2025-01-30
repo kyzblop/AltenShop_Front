@@ -38,7 +38,7 @@ export class ProductsService {
   }
 
   // Créer un produit
-  public create(product: Product): Observable<string> {
+  public create(product: Product): Observable<Product> {
     // Récupération du token
     const token = localStorage.getItem("token");
 
@@ -52,20 +52,19 @@ export class ProductsService {
       .set("Content-Type", "application/json");
 
     return this.http
-      .post<string>(this.path, product, {
+      .post<Product>(this.path, product, {
         headers: headers,
-        observe: "response",
       })
       .pipe(
-        tap((response: any) => {
-          console.log("Statut HTTP : " + response.status);
-          this.get().subscribe();
+        tap((newProduct: Product) => {
+          const updatedProducts = [...this.productSubject.value, newProduct];
+          this.productSubject.next(updatedProducts);
         })
       );
   }
 
   // Modification du produit
-  public update(product: Product): Observable<string> {
+  public update(product: Product): Observable<Product> {
     // Récupération du token
     const token = localStorage.getItem("token");
 
@@ -79,14 +78,29 @@ export class ProductsService {
       .set("Content-Type", "application/json");
 
     return this.http
-      .patch<boolean>(`${this.path}/${product.id}`, product, {
+      .patch<Product>(`${this.path}/${product.id}`, product, {
         headers: headers,
-        observe: "response",
       })
       .pipe(
-        tap((response: any) => {
-          console.log("Statut HTTP : " + response.status);
-          this.get().subscribe();
+        tap((updatedProduct: Product) => {
+          const updatedProducts = this.productSubject.value.map((p) =>
+            p.id === updatedProduct.id ? updatedProduct : p
+          );
+          this.productSubject.next(updatedProducts);
+        })
+      );
+  }
+
+  // Modification de la quantité d'un produit
+  public updateQuantity(product: Product): Observable<Product> {
+    return this.http
+      .patch<Product>(`${this.path}/${product.id}/quantity`, product.quantity)
+      .pipe(
+        tap((updatedProduct) => {
+          const updatedProducts = this.productSubject.value.map((p) =>
+            p.id === updatedProduct.id ? updatedProduct : p
+          );
+          this.productSubject.next(updatedProducts);
         })
       );
   }
@@ -112,7 +126,10 @@ export class ProductsService {
       .pipe(
         tap((response: any) => {
           console.log("Statut HTTP : " + response.status);
-          this.get().subscribe();
+          const updatedProducts = this.productSubject.value.filter(
+            (product) => product.id !== productId
+          );
+          this.productSubject.next(updatedProducts);
         })
       );
   }

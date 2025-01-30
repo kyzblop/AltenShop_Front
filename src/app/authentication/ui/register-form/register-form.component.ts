@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "app/authentication/data-access/auth.service";
 import { LoginDto } from "app/authentication/data-access/login-dto";
-import { User } from "app/authentication/data-access/user.model";
+import { User } from "app/user/data-access/user.model";
 import { ButtonModule } from "primeng/button";
 import { InputTextModule } from "primeng/inputtext";
 
@@ -20,8 +20,8 @@ export class RegisterFormComponent {
     username: "",
     id: 0,
     password: "",
-    panier: [],
-    listeEnvie: [],
+    panierAchat: [],
+    listEnvie: [],
   };
 
   @Output() onRegister = new EventEmitter<void>();

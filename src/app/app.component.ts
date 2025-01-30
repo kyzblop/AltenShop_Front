@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { SplitterModule } from "primeng/splitter";
 import { ToolbarModule } from "primeng/toolbar";
 import { PanelMenuComponent } from "./shared/ui/panel-menu/panel-menu.component";
@@ -34,7 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public isLogin: boolean = false;
   public authSubscription: Subscription | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.isAuthObservable.subscribe(
@@ -63,5 +63,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public logout() {
     this.authService.logout();
+  }
+
+  public goBucket() {
+    this.router.navigate(["bucket"]);
   }
 }
