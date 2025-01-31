@@ -151,6 +151,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.userService.updateUser(this.idUser, null, this.wantedList).subscribe();
   }
 
+  // Méthode pour supprimer un element de la liste de souhait
+  public suppWantedList(product: Product) {
+    const newWantedList = this.wantedList.filter((p) => p.id != product.id);
+    this.userService.updateUser(this.idUser, null, newWantedList).subscribe();
+  }
+
   // Méthode pour savoir si le produit est dans la liste de souhait
   public isProductWanted(product: Product): boolean {
     return !!this.wantedList.find((p) => p.id === product.id);

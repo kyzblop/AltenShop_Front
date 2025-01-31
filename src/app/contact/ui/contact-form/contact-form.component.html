@@ -1,0 +1,42 @@
+<h1 class="text-center">Contactez nous</h1>
+
+<form #form="ngForm" (ngSubmit)="onSubmit()">
+  <div class="form-field">
+    <label for="email">Adresse mail</label>
+    <input
+      pInputText
+      type="email"
+      id="email"
+      name="email"
+      [(ngModel)]="emailUser"
+      required
+    />
+  </div>
+  <div class="form-field">
+    <label for="message">Contenu du message</label>
+    <textarea
+      pInputTextarea
+      id="message"
+      name="message"
+      rows="10"
+      cols="30"
+      [(ngModel)]="message"
+      maxlength="300"
+      required
+    ></textarea>
+  </div>
+  <div class="flex justify-content-between">
+    <div class="footer">
+      <p-button
+        type="submit"
+        [disabled]="!form.valid"
+        label="Envoyer"
+        severity="success"
+      />
+      @if(isMessageSend){
+        <span>Demande de contact envoyée avec succès</span>
+      }
+      
+    </div>
+  </div>
+</form>

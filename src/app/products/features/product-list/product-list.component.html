@@ -14,7 +14,7 @@
     <p-card class="block mb-2">
       <div class="row">
         <div class="imageZone">
-          @if( isLogin && isProductWanted(product)){
+          @if( isLogin && isProductWanted(product) && !isAdmin){
           <img
             class="badge_wanted"
             src="/assets/icons/wanted_icon-removebg-preview.png"
@@ -44,11 +44,11 @@
 
           <div>
             <div class="text-lg font-medium text-900 mt-2">
-              Quantité disponible : {{ product.quantity }}
+              {{ product.price }} €
             </div>
 
             <div class="text-lg font-medium text-900 mt-2">
-              {{ product.price }} €
+              Quantité disponible : {{ product.quantity }}
             </div>
           </div>
         </div>
@@ -83,11 +83,17 @@
           />
           }@else {
           <span style="color: red">Ce produit n'est plus disponible</span>
-          } @if(isLogin && !isProductWanted(product)) {
+          } @if(!isProductWanted(product)) {
           <p-button
             label="Ajouter à la liste de souhait"
             severity="primary"
             (onClick)="addWantedList(product)"
+          />
+          } @else{
+          <p-button
+            label="Supprimer de la liste de souhait"
+            severity="primary"
+            (onClick)="suppWantedList(product)"
           />
           } } }
         </div>

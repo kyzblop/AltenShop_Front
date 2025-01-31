@@ -21,6 +21,9 @@ export class AuthService {
   );
   public isAdminLoginObservable = this.isAdminLoginSubject.asObservable();
 
+  private userEmailSubject = new BehaviorSubject<string>(this.getUserEmail());
+  public userEmailObservable = this.userEmailSubject.asObservable();
+
   constructor() {}
 
   // Méthode pour savoir si l'utilisateur est connecté
@@ -30,25 +33,11 @@ export class AuthService {
 
   // Méthode pour savoir si l'utilisateur connecté est admin
   public isAdminLogin(): boolean {
-    // Récupération du token dans le local storage
-    const token = localStorage.getItem("token");
+    const email = this.getUserEmail();
 
-    if (!token) {
-      return false;
-    }
-
-    try {
-      // Décodage du token
-      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
-
-      // Si le subject du token est l'adresse mail admin alors l'utilisateur est admin
-      if (tokenPayload.sub == "admin@admin.com") {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.log("Erreur lors du décodage du token : " + error);
+    if (email == "admin@admin.com") {
+      return true;
+    } else {
       return false;
     }
   }
@@ -62,6 +51,7 @@ export class AuthService {
           localStorage.setItem("token", response.token);
           this.isAuthSubject.next(this.isAuth());
           this.isAdminLoginSubject.next(this.isAdminLogin());
+          this.userEmailSubject.next(this.getUserEmail());
         })
       );
   }
@@ -71,6 +61,7 @@ export class AuthService {
     localStorage.removeItem("token");
     this.isAuthSubject.next(this.isAuth());
     this.isAdminLoginSubject.next(this.isAdminLogin());
+    this.userEmailSubject.next("");
   }
 
   // Méthode pour créer un compte
@@ -94,6 +85,26 @@ export class AuthService {
     } catch (error) {
       console.error("Erreur de décodage du token : " + error);
       return -1;
+    }
+  }
+
+  // Méthode pour avoir l'email de l'utilisateur
+  public getUserEmail(): string {
+    // Récupération du token dans le local storage
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return "L'utilisateur n'est pas connecté";
+    }
+
+    try {
+      // Décodage du token
+      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+
+      // Retourne le subject du token (soit l'adresse mail)
+      return tokenPayload.sub;
+    } catch (error) {
+      return "Erreur lors du décodage du token : " + error;
     }
   }
 }
