@@ -24,7 +24,9 @@ export class ContactFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authSubscription = this.authService.userEmailObservable.subscribe(
       (email) => {
-        this.emailUser = email;
+        if (email != "L'utilisateur n'est pas connecté") {
+          this.emailUser = email;
+        }
       }
     );
   }

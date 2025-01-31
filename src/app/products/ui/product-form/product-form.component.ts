@@ -147,10 +147,10 @@ export class ProductFormComponent {
   public readonly editedProduct = computed(() => ({ ...this.product() }));
 
   public readonly categories: SelectItem[] = [
-    { value: "Accessories", label: "Accessories" },
+    { value: "Accessoires", label: "Accessoires" },
     { value: "Fitness", label: "Fitness" },
-    { value: "Clothing", label: "Clothing" },
-    { value: "Electronics", label: "Electronics" },
+    { value: "Vêtements", label: "Vêtements" },
+    { value: "Electronique", label: "Electronique" },
   ];
 
   onCancel() {

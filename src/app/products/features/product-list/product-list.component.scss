@@ -45,3 +45,15 @@
 .space {
   justify-content: space-between;
 }
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  input {
+    width: 600px;
+  }
+}

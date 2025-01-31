@@ -1,5 +1,23 @@
 <h1 class="text-center">Liste des produits</h1>
 
+<div class="search">
+  <i class="pi pi-search" style="font-size: 2rem"></i>
+
+  <input
+    pInputText
+    type="search"
+    placeholder="Chercher un produit"
+    [(ngModel)]="wordSearched"
+    (keydown.enter)="search()"
+    (input)="search()"
+  />
+  <p-dropdown
+    [options]="categories"
+    [(ngModel)]="categorySelected"
+    (onChange)="changeFilter()"
+  ></p-dropdown>
+</div>
+
 @if (isAdmin) {
 <p-button
   label="Créer produit"
@@ -10,7 +28,9 @@
 
 <p-dataView #dv [value]="products">
   <ng-template pTemplate="list" let-products>
-    @for (product of products ; track product) {
+    @if(productListFiltered.length == 0){
+    <span>Aucun produit ne correspond à votre recherche</span>
+    } @for (product of productListFiltered ; track product) {
     <p-card class="block mb-2">
       <div class="row">
         <div class="imageZone">

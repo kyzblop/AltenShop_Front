@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, inject, signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { AuthService } from "app/authentication/data-access/auth.service";
 import { Product } from "app/products/data-access/product.model";
 import { ProductsService } from "app/products/data-access/products.service";
@@ -8,6 +9,8 @@ import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { DataViewModule } from "primeng/dataview";
 import { DialogModule } from "primeng/dialog";
+import { DropdownModule } from "primeng/dropdown";
+import { InputTextModule } from "primeng/inputtext";
 import { Observable, Subscription, tap } from "rxjs";
 
 const emptyProduct: Product = {
@@ -38,6 +41,9 @@ const emptyProduct: Product = {
     ButtonModule,
     DialogModule,
     ProductFormComponent,
+    InputTextModule,
+    DropdownModule,
+    FormsModule,
   ],
 })
 export class ProductListComponent implements OnInit, OnDestroy {
@@ -57,8 +63,19 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   public bucket: Product[] = [];
   public wantedList: Product[] = [];
-
   public idUser: number = 0;
+
+  public categories: string[] = [
+    "Toutes categories",
+    "Accessoires",
+    "Fitness",
+    "Vêtements",
+    "Electronique",
+  ];
+  public wordSearched: string = "";
+  public categorySelected: string = "Toutes categories";
+
+  public productListFiltered: Product[] = [];
 
   constructor(
     private authService: AuthService,
@@ -69,6 +86,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productSubscription = this.productsService.productObservable.subscribe(
       (products) => {
         this.products = products;
+        this.productListFiltered = products;
       }
     );
 
@@ -104,22 +122,26 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productSubscription?.unsubscribe();
   }
 
+  // Méthode lors de la création d'un produit
   public onCreate() {
     this.isCreation = true;
     this.isDialogVisible = true;
     this.editedProduct.set(emptyProduct);
   }
 
+  // Méthode lors de la mise à jour d'un produit
   public onUpdate(product: Product) {
     this.isCreation = false;
     this.isDialogVisible = true;
     this.editedProduct.set(product);
   }
 
+  // Méthode lors de la suppression d'un produit
   public onDelete(product: Product) {
     this.productsService.delete(product.id).subscribe();
   }
 
+  // Méthode lors de l'enregistrement
   public onSave(product: Product) {
     if (this.isCreation) {
       this.productsService.create(product).subscribe();
@@ -129,10 +151,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.closeDialog();
   }
 
+  // Méthode lors de l'annulation
   public onCancel() {
     this.closeDialog();
   }
 
+  // Méthode pour fermer le modal
   private closeDialog() {
     this.isDialogVisible = false;
   }
@@ -168,6 +192,28 @@ export class ProductListComponent implements OnInit, OnDestroy {
       return true;
     } else {
       return false;
+    }
+  }
+
+  // Méthode pour faire une recherche sur le nom d'un produit
+  search() {
+    if (this.wordSearched) {
+      this.productListFiltered = this.productListFiltered.filter((product) =>
+        product.name.toLowerCase().includes(this.wordSearched.toLowerCase())
+      );
+    } else {
+      this.changeFilter();
+    }
+  }
+
+  // Méthode pour filtrer la liste selon la categorie
+  changeFilter() {
+    if (this.categorySelected != "Toutes categories") {
+      this.productListFiltered = this.products.filter(
+        (product) => product.category == this.categorySelected
+      );
+    } else {
+      this.productListFiltered = this.products;
     }
   }
 }

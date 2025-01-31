@@ -21,7 +21,7 @@ export class UserService {
 
   constructor(private authService: AuthService) {
     const userId = authService.getUserId();
-    if (userId != null) {
+    if (userId != 0) {
       this.getBucketByIdUser(this.authService.getUserId()).subscribe();
       this.getWantedListByIdUser(this.authService.getUserId()).subscribe();
     }
