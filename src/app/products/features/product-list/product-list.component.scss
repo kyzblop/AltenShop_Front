@@ -4,9 +4,30 @@
   overflow: auto;
 }
 
+.imageZone {
+  display: grid;
+}
+
 .imageCard {
   height: 200px;
   width: 200px;
+
+  grid-area: 1/1;
+  z-index: 1;
+}
+
+.badge_wanted {
+  width: 50px;
+  height: 50px;
+
+  grid-area: 1/1;
+  z-index: 2;
+
+  margin: 5px;
+
+  background-color: rgb(191, 191, 7);
+
+  border-radius: 50%;
 }
 
 .row {
@@ -23,17 +44,4 @@
 
 .space {
   justify-content: space-between;
-}
-
-.badge_wanted {
-  width: 50px;
-  height: 50px;
-
-  background-color: rgb(191, 191, 7);
-
-  border-radius: 50%;
-
-  position: absolute;
-  top: 20px;
-  left: 10px;
 }

@@ -13,15 +13,22 @@
     @for (product of products ; track product) {
     <p-card class="block mb-2">
       <div class="row">
-        @if( isLogin && isProductWanted(product)){
-        <img
-          class="badge_wanted"
-          src="/assets/icons/wanted_icon-removebg-preview.png"
-          alt="wanted_img"
-        />
-        }
+        <div class="imageZone">
+          @if( isLogin && isProductWanted(product)){
+          <img
+            class="badge_wanted"
+            src="/assets/icons/wanted_icon-removebg-preview.png"
+            alt="wanted_img"
+          />
+          }
 
-        <img class="imageCard" src="{{ product.image }}" alt="product_image" />
+          <img
+            class="imageCard"
+            src="{{ product.image }}"
+            alt="product_image"
+          />
+        </div>
+
         <div class="col space">
           <div>
             <span class="font-medium text-secondary text-sm">{{

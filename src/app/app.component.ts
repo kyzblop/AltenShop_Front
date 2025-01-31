@@ -9,6 +9,8 @@ import { DialogModule } from "primeng/dialog";
 import { LoginFormComponent } from "./authentication/ui/login-form/login-form.component";
 import { RegisterFormComponent } from "./authentication/ui/register-form/register-form.component";
 import { Subscription } from "rxjs";
+import { UserService } from "./user/data-access/user.service";
+import { Product } from "./products/data-access/product.model";
 
 @Component({
   selector: "app-root",
@@ -33,13 +35,25 @@ export class AppComponent implements OnInit, OnDestroy {
   public isDialogRegisterVisible: boolean = false;
   public isLogin: boolean = false;
   public authSubscription: Subscription | null = null;
+  public bucket: Product[] | null = null;
+  public userSubscription: Subscription | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.isAuthObservable.subscribe(
       (authStatus) => {
         this.isLogin = authStatus;
+      }
+    );
+
+    this.userSubscription = this.userService.bucketObservable.subscribe(
+      (bucket) => {
+        this.bucket = bucket;
       }
     );
   }

@@ -21,17 +21,11 @@ export class AuthService {
   );
   public isAdminLoginObservable = this.isAdminLoginSubject.asObservable();
 
-  constructor() {
-    this.checkLocalStorage();
-  }
+  constructor() {}
 
   // Méthode pour savoir si l'utilisateur est connecté
   public isAuth(): boolean {
-    if (window.localStorage) {
-      return !!localStorage.getItem("token");
-    } else {
-      return false;
-    }
+    return !!localStorage.getItem("token");
   }
 
   // Méthode pour savoir si l'utilisateur connecté est admin
@@ -59,20 +53,10 @@ export class AuthService {
     }
   }
 
-  // Méthode pour regarder si le token change et mettre à jour l'information d'authentification s'il change
-  public checkLocalStorage() {
-    window.addEventListener("storage", (event) => {
-      if (event.key === "token") {
-        this.isAuthSubject.next(this.isAuth());
-        this.isAdminLoginSubject.next(this.isAdminLogin());
-      }
-    });
-  }
-
   // Méthode pour se connecter
   public login(loginDto: LoginDto): Observable<ResponseLoginDto> {
     return this.http
-      .post<ResponseLoginDto>(this.path + "/token", loginDto)
+      .post<ResponseLoginDto>(`${this.path}/token`, loginDto)
       .pipe(
         tap((response: ResponseLoginDto) => {
           localStorage.setItem("token", response.token);
@@ -91,7 +75,7 @@ export class AuthService {
 
   // Méthode pour créer un compte
   public register(user: User): Observable<User> {
-    return this.http.post<User>(this.path + "/account", user);
+    return this.http.post<User>(`${this.path}/account`, user);
   }
 
   public getUserId(): number {

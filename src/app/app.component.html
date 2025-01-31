@@ -7,9 +7,18 @@
   </div>
   <div class="p-toolbar-group-end gap-perso-1">
     @if(isLogin){
-    <a (click)="goBucket()">
-      <i class="pi pi-shopping-cart" style="font-size: 2rem"></i>
-    </a>
+    <div class="bucketIcon">
+      @if(bucket?.length) {
+      <div class="badgeNbProduct">{{ bucket?.length }}</div>
+      }
+
+      <div class="bucketImg">
+        <a (click)="goBucket()">
+          <i class="pi pi-shopping-cart" style="font-size: 2rem"></i>
+        </a>
+      </div>
+    </div>
+
     } @if(isLogin) {
     <p-button label="Se deconnecter" (onClick)="logout()" />
 

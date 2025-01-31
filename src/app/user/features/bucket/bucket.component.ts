@@ -38,6 +38,8 @@ export class BucketComponent implements OnInit, OnDestroy {
         this.bucket = bucket;
         if (bucket.length > 0) {
           this.isBucketEmpty = false;
+        } else {
+          this.isBucketEmpty = true;
         }
         this.BucketSet = [
           ...new Map(bucket.map((product) => [product.id, product])).values(),

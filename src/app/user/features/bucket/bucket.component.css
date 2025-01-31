@@ -1,3 +1,9 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow: auto;
+}
+
 .imageCard {
   height: 200px;
   width: 200px;
@@ -17,19 +23,6 @@
 
 .space {
   justify-content: space-between;
-}
-
-.badge_wanted {
-  width: 50px;
-  height: 50px;
-
-  background-color: rgb(191, 191, 7);
-
-  border-radius: 50%;
-
-  position: absolute;
-  top: 20px;
-  left: 10px;
 }
 
 .boutonValider {
