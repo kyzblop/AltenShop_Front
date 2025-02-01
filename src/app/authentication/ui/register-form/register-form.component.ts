@@ -24,14 +24,21 @@ export class RegisterFormComponent {
     listEnvie: [],
   };
 
+  isEmailAlreadyUsed: boolean = false;
+
   @Output() onRegister = new EventEmitter<void>();
 
   constructor(private authService: AuthService) {}
 
   public onSubmit() {
-    this.authService.register(this.user).subscribe((user) => {
-      this.authService.login(new LoginDto(user.email, user.password));
+    this.authService.register(this.user).subscribe({
+      next: (user) => {
+        this.authService.login(new LoginDto(user.email, user.password));
+        this.onRegister.emit();
+      },
+      error: (error) => {
+        this.isEmailAlreadyUsed = true;
+      },
     });
-    this.onRegister.emit();
   }
 }

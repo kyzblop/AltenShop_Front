@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { LoginDto } from "./login-dto";
-import { BehaviorSubject, Observable, tap } from "rxjs";
+import { BehaviorSubject, catchError, Observable, tap, throwError } from "rxjs";
 import { ResponseLoginDto } from "./response-login-dto";
 import { User } from "../../user/data-access/user.model";
 
@@ -66,7 +66,11 @@ export class AuthService {
 
   // Méthode pour créer un compte
   public register(user: User): Observable<User> {
-    return this.http.post<User>(`${this.path}/account`, user);
+    return this.http.post<User>(`${this.path}/account`, user).pipe(
+      catchError((error) => {
+        return throwError(() => new Error(error.error));
+      })
+    );
   }
 
   public getUserId(): number {

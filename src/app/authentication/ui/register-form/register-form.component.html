@@ -47,7 +47,10 @@
     />
   </div>
 
-  <div>
+  <div class="footer">
     <p-button type="submit" label="Se connecter" severity="success" />
+    @if (isEmailAlreadyUsed) {
+    <span>Cet email est déjà utilisé</span>
+    }
   </div>
 </form>
