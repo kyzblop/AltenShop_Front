@@ -216,4 +216,16 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.productListFiltered = this.products;
     }
   }
+
+  // Change la couleur de la bordure selon la quantité disponible si on est connecté en tant qu'admin
+
+  roundColor(product: Product): string {
+    if (product.inventoryStatus == "LOWSTOCK") {
+      return "orange";
+    } else if (product.inventoryStatus == "OUTOFSTOCK") {
+      return "red";
+    } else {
+      return "green";
+    }
+  }
 }

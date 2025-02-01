@@ -19,6 +19,7 @@
 </div>
 
 @if (isAdmin) {
+<br />
 <p-button
   label="Créer produit"
   (onClick)="onCreate()"
@@ -30,7 +31,7 @@
   <ng-template pTemplate="list" let-products>
     @if(productListFiltered.length == 0){
     <span>Aucun produit ne correspond à votre recherche</span>
-    } @for (product of productListFiltered ; track product) {
+    } @for (product of productListFiltered ; track product.id) {
     <p-card class="block mb-2">
       <div class="row">
         <div class="imageZone">
@@ -68,7 +69,9 @@
             </div>
 
             <div class="text-lg font-medium text-900 mt-2">
-              Quantité disponible : {{ product.quantity }}
+              @if(isAdmin){
+              <i class="pi pi-circle-fill {{ roundColor(product) }}"></i>
+              } Quantité disponible : {{ product.quantity }}
             </div>
           </div>
         </div>
