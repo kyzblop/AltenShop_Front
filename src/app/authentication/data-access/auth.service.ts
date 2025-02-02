@@ -24,8 +24,6 @@ export class AuthService {
   private userEmailSubject = new BehaviorSubject<string>(this.getUserEmail());
   public userEmailObservable = this.userEmailSubject.asObservable();
 
-  constructor() {}
-
   // Méthode pour savoir si l'utilisateur est connecté
   public isAuth(): boolean {
     return !!localStorage.getItem("token");
@@ -73,6 +71,7 @@ export class AuthService {
     );
   }
 
+  // Méthode pour obtenir l'id de l'utilisateur connecté
   public getUserId(): number {
     // Récupération du token dans le local storage
     const token = localStorage.getItem("token");
@@ -92,7 +91,7 @@ export class AuthService {
     }
   }
 
-  // Méthode pour avoir l'email de l'utilisateur
+  // Méthode pour avoir l'email de l'utilisateur connecté
   public getUserEmail(): string {
     // Récupération du token dans le local storage
     const token = localStorage.getItem("token");

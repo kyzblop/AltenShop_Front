@@ -34,6 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public isDialogLoginVisible: boolean = false;
   public isDialogRegisterVisible: boolean = false;
   public isLogin: boolean = false;
+  public isAdminLogin: boolean = false;
   public authSubscription: Subscription | null = null;
   public bucket: Product[] | null = null;
   public userSubscription: Subscription | null = null;
@@ -48,6 +49,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService.isAuthObservable.subscribe(
       (authStatus) => {
         this.isLogin = authStatus;
+      }
+    );
+
+    this.authSubscription = this.authService.isAdminLoginObservable.subscribe(
+      (authStatus) => {
+        this.isAdminLogin = authStatus;
       }
     );
 
@@ -75,10 +82,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isDialogRegisterVisible = false;
   }
 
+  // Méthode pour se déconnecter
   public logout() {
     this.authService.logout();
   }
 
+  // Méthode pour se rendre dans le panier
   public goBucket() {
     this.router.navigate(["bucket"]);
   }

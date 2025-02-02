@@ -217,8 +217,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Change la couleur de la bordure selon la quantité disponible si on est connecté en tant qu'admin
-
+  // Change la couleur de la pastille selon la quantité disponible si on est connecté en tant qu'admin
   roundColor(product: Product): string {
     if (product.inventoryStatus == "LOWSTOCK") {
       return "orange";

@@ -6,7 +6,7 @@
     {{ title }}
   </div>
   <div class="p-toolbar-group-end gap-perso-1">
-    @if(isLogin){
+    @if(isLogin && !isAdminLogin){
     <div class="bucketIcon">
       @if(bucket?.length) {
       <div class="badgeNbProduct">{{ bucket?.length }}</div>
